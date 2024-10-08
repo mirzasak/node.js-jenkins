@@ -8,17 +8,17 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sshagent(['jenkins_ssh_key']) {
+                withCredentials([sshUserPrivateKey(credentialsId: 'jenkins-ssh', keyFileVariable: 'SSH_KEY')]) {
                     sh '''
-                        ssh ubuntu@3.81.134.252 "
-                            cd /home/ubuntu/node.js-jenkins
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@3.81.134.252 '
                             git config --global --add safe.directory /home/ubuntu/node.js-jenkins
+                            cd /home/ubuntu/node.js-jenkins
                             git add .
                             git commit -m 'Save local changes before pulling' || echo 'No changes to commit'
                             git pull origin main --rebase
                             npm install
                             pm2 restart index.js --name testjs1
-                        "
+                        '
                     '''
                 }
             }
