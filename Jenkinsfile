@@ -15,7 +15,7 @@ pipeline {
             steps {
                 sshagent(['jenkins_ssh_key']) { // Daha önce eklediğiniz credential ID
                     sh '''
-                        ssh ubuntu@3.81.134.252 "cd /home/ubuntu/node.js-jenkins && npm install && pm2 restart index.js"
+                        ssh ubuntu@3.81.134.252 "cd /home/ubuntu && npm install && pm2 restart index.js"
                     '''
                 }
             }
