@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git url: 'https://github.com/mirzasak/node.js-jenkins.git', branch: 'main'
+                git url: 'https://github.com/mirzasak/node.js-jenkins', branch: 'main'
             }
         }
         stage('Install Dependencies') {
