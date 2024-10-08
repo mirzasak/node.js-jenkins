@@ -19,6 +19,7 @@ pipeline {
                     '''
                 }
             }
+        }
         //stage('Deploy to EC2') {
           //  steps {
            //     withCredentials([sshUserPrivateKey(credentialsId: 'jenkins_ssh_key', keyFileVariable: 'SSH_KEY')]) {
