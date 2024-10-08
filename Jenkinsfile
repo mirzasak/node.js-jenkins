@@ -30,7 +30,7 @@ pipeline {
                 // Node.js uygulamasını PM2 veya systemd kullanarak yeniden başlat
                 sshagent(credentials: ['ssh-key']) {
                     sh '''
-                    ssh ubuntu@35.173.212.106 <<EOF
+                    ssh ubuntu@35.173.212.106 <<EOF>>
                     cd /home/ubuntu    
                     pm2 stop all || true
                     pm2 start index.js
