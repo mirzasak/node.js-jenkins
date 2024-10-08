@@ -16,6 +16,7 @@ pipeline {
                     sh '''
                     ssh -o StrictHostKeyChecking=no ubuntu@35.173.212.106 <<EOF
                     cd /home/ubuntu/
+                    git clone https://github.com/mirzasak/node.js-jenkins.git
                     git pull origin main
                     npm install
                     EOF
