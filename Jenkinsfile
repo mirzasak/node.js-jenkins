@@ -5,7 +5,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 // GitHub'dan projeyi klonla
-                git branch: 'main', url: 'https://github.com/mirzasak/node.js-jenkins.git'
+                git branch: 'main', url: 'https://github.com/mirzasak/node.js-jenkins'
             }
         }
 
