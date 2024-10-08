@@ -18,6 +18,7 @@ pipeline {
                         ssh ubuntu@3.81.134.252 "cd /home/ubuntu/node.js-jenkins && npm install && pm2 restart index.js"
                     '''
                 }
+            }
         //stage('Deploy to EC2') {
           //  steps {
            //     withCredentials([sshUserPrivateKey(credentialsId: 'jenkins_ssh_key', keyFileVariable: 'SSH_KEY')]) {
