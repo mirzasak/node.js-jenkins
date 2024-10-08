@@ -1,40 +1,51 @@
 pipeline {
     agent any
+    
     stages {
-        stage('Checkout Code') {
+        stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/mirzasak/node.js-jenkins.git', branch: 'main'
+                // GitHub'dan projeyi klonla
+                git branch: 'main', url: 'https://github.com/mirzasak/node.js-jenkins.git'
             }
         }
+
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                sshagent(['jenkins_ssh_key']) { // Daha önce eklediğiniz credential ID
+                // EC2'de projeyi çalıştırmadan önce gerekli bağımlılıkları yükle
+                sshagent(credentials: ['ssh-key']) {
                     sh '''
-                        ssh ubuntu@3.81.134.252 "cd /home/ubuntu/node.js-jenkins && npm install && pm2 restart index.js --name 'test'"
+                    ssh -o StrictHostKeyChecking=no ubuntu@35.173.212.106 <<EOF
+                    cd /home/ubuntu/
+                    git pull origin main
+                    npm install
+                    EOF
                     '''
                 }
             }
         }
-        //stage('Deploy to EC2') {
-          //  steps {
-           //     withCredentials([sshUserPrivateKey(credentialsId: 'jenkins_ssh_key', keyFileVariable: 'SSH_KEY')]) {
-             //       sh '''
-               //         # ssh-keyscan -H <EC2_PUBLIC_IP> >> ~/.ssh/known_hosts
-                 //       ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@3.81.134.252 '
-                   //         cd /home/ubuntu/node.js-jenkins # || mkdir -p /home/ubuntu/node.js-jenkins
-                     //       git config --global --add safe.directory /home/ubuntu/node.js-jenkins
-                         //   git clone https://github.com/mirzasak/node.js-jenkins.git . || (git pull origin main)
-                         //   npm install
-                           // pm2 restart index.js --name testjs1 || pm2 start index.js --name testjs1
-                       // '
-                    //'''
-               // }
-           // }
-       // }
+
+        stage('Restart Application') {
+            steps {
+                // Node.js uygulamasını PM2 veya systemd kullanarak yeniden başlat
+                sshagent(credentials: ['ssh-key']) {
+                    sh '''
+                    ssh ubuntu@35.173.212.106 <<EOF
+                    cd /home/ubuntu    
+                    pm2 stop all || true
+                    pm2 start index.js
+                    EOF
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Deployment completed successfully!'
+        }
+        failure {
+            echo 'Deployment failed!'
+        }
     }
 }
