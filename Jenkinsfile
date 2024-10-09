@@ -8,32 +8,16 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/mirzasak/node.js-jenkins'
             }
         }
-
-        stage('Install Dependencies') {
+        stage('Deploy') {
             steps {
-                // EC2'de projeyi çalıştırmadan önce gerekli bağımlılıkları yükle
-                sshagent(credentials: ['ssh-key']) {
+                withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
                     sh '''
-                    ssh -o StrictHostKeyChecking=no ubuntu@35.173.212.106 <<EOF>>
-                    cd /home/ubuntu/
-                    git pull origin main
-                    npm install
-                    EOF
-                    '''
-                }
-            }
-        }
-
-        stage('Restart Application') {
-            steps {
-                // Node.js uygulamasını PM2 veya systemd kullanarak yeniden başlat
-                sshagent(credentials: ['ssh-key']) {
-                    sh '''
-                    ssh ubuntu@35.173.212.106 <<EOF>>
-                    cd /home/ubuntu    
-                    pm2 stop all || true
-                    pm2 start index.js
-                    EOF
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@35.173.212.106 '
+                            cd /home/ubuntu
+                            git pull origin main
+                            npm install
+                            pm2 restart /home/ubuntu/node.js-jenkins/inndex.js
+                        '
                     '''
                 }
             }
