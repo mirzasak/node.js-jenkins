@@ -16,7 +16,7 @@ pipeline {
                             cd /home/ubuntu/node.js-jenkins
                             git pull origin main
                             npm install
-                            pm2 restart index.js
+                            pm2 restart index.js --name test2
                         '
                     '''
                 }
