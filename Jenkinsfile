@@ -13,7 +13,7 @@ pipeline {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
                     sh '''
                         ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@35.173.212.106 '
-                            cd /home/ubuntu
+                            cd /home/ubuntu/node.js-jenkins
                             git pull origin main
                             npm install
                             pm2 restart /home/ubuntu/node.js-jenkins/inndex.js
