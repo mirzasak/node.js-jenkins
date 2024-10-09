@@ -12,7 +12,7 @@ pipeline {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ssh-key', keyFileVariable: 'SSH_KEY')]) {
                     sh '''
-                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@35.173.212.106 '
+                        ssh -o StrictHostKeyChecking=no -i $SSH_KEY ubuntu@54.204.153.38 '
                             cd /home/ubuntu/node.js-jenkins
                             git pull origin main
                             npm install
